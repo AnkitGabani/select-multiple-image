@@ -1,0 +1,68 @@
+import PhotosUI
+
+
+var config = PHPickerConfiguration()
+config.selectionLimit = 10
+            
+let pickerView = PHPickerViewController(configuration: config)
+pickerView.delegate = self
+self.present(pickerView, animated: true)
+
+
+
+extension AddBeforeVC: PHPickerViewControllerDelegate
+{
+    @available(iOS 14.0, *)
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        dismiss(animated: true)
+        
+        for obj in results
+        {
+            obj.itemProvider.loadObject(ofClass: UIImage.self) { object, error in
+                if let img = object as? UIImage{
+                    
+                    DispatchQueue.main.async {
+                        
+                        self.isUploadImg = true
+                        
+                        if self.strImg == "1"
+                        {
+                            self.isBefore = true
+                            
+                            if self.arrImgBefore.count == 10
+                            {
+                                self.setUpMakeToast(msg: "Added")
+                            }
+                            else
+                            {
+                                self.arrImgBefore.add(img)
+                            }
+                            
+                            self.collectionViewBefore.isHidden = false
+                            self.collectionViewBefore.reloadData()
+                        }
+                        else
+                        {
+                            self.isAfter = true
+                            
+                            if self.arrImgAfter.count == 10
+                            {
+                                self.setUpMakeToast(msg: "Added")
+                            }
+                            else
+                            {
+                                self.arrImgAfter.add(img)
+                            }
+                            
+                            self.collectionViewAfter.isHidden = false
+                            self.collectionViewAfter.reloadData()
+                        }
+                    }
+                    
+                }
+            }
+        }
+     }
+    
+    
+}
